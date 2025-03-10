@@ -20,6 +20,9 @@ import {
   FormLabel,
   FormMessage,
 } from "./ui/form";
+import useHttp from "@/hooks/use-http";
+import Credential from "@/types/dto/Credential";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   email: z.string().email("Please enter a valid email"),
@@ -45,8 +48,19 @@ export function LoginForm({
     },
   });
 
-  const loginHandler = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  const { loading, requestData } = useHttp();
+
+  const loginHandler = async (values: z.infer<typeof formSchema>) => {
+    const credentials: Credential = {
+      email: values.email,
+      password: values.password,
+    };
+    const response = await requestData("/auth/login", "POST", credentials);
+    if (response.isError) {
+      if (response.error?.status === 401)
+        return toast("Invalid credentials. Please try again");
+      return toast(response.message);
+    }
   };
 
   return (
@@ -97,7 +111,7 @@ export function LoginForm({
                   )}
                 />
                 <div className="flex justify-end">
-                  <Button className="px-0" variant="link">
+                  <Button type="button" className="px-0" variant="link">
                     Forgot Password?
                   </Button>
                 </div>
@@ -116,6 +130,7 @@ export function LoginForm({
                   className="px-1 underline cursor-pointer"
                   variant="link"
                   type="button"
+                  disabled={loading}
                 >
                   Sign up
                 </Button>
