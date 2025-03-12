@@ -68,6 +68,10 @@ export function LoginForm({
         return toast("Invalid credentials. Please try again");
       return toast(response.message);
     }
+    navigate("/dashboard", {
+      replace: true,
+    });
+    toast("You are logged in");
   };
 
   const togglePasswordVisibilityHandler = () =>
