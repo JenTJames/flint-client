@@ -24,6 +24,8 @@ import useHttp from "@/hooks/use-http";
 import Credential from "@/types/dto/Credential";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
+import { Eye, EyeClosed } from "lucide-react";
+import { useState } from "react";
 
 const formSchema = z.object({
   email: z.string().email("Please enter a valid email"),
@@ -41,6 +43,8 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -65,6 +69,9 @@ export function LoginForm({
       return toast(response.message);
     }
   };
+
+  const togglePasswordVisibilityHandler = () =>
+    setShowPassword((currentState) => !currentState);
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -100,23 +107,37 @@ export function LoginForm({
                 )}
               />
               <div className="flex flex-col gap-1">
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="password"
-                          placeholder="Your secret password"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <div className="flex gap-1 items-center">
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem className="flex-1">
+                        <FormLabel>Password</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Input
+                              type={showPassword ? "text" : "password"}
+                              placeholder="Your secret password"
+                              {...field}
+                              className="pr-10"
+                            />
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="absolute right-0 top-1/2 -translate-y-1/2"
+                              onClick={togglePasswordVisibilityHandler}
+                            >
+                              {showPassword ? <EyeClosed /> : <Eye />}
+                            </Button>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
                 <div className="flex justify-end">
                   <Button type="button" className="px-0" variant="link">
                     Forgot Password?
