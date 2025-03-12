@@ -23,6 +23,7 @@ import {
 import useHttp from "@/hooks/use-http";
 import Credential from "@/types/dto/Credential";
 import { toast } from "sonner";
+import { useNavigate } from "react-router";
 
 const formSchema = z.object({
   email: z.string().email("Please enter a valid email"),
@@ -47,6 +48,8 @@ export function LoginForm({
       password: "",
     },
   });
+
+  const navigate = useNavigate();
 
   const { loading, requestData } = useHttp();
 
@@ -131,6 +134,7 @@ export function LoginForm({
                   variant="link"
                   type="button"
                   disabled={loading}
+                  onClick={() => navigate("/sign-up")}
                 >
                   Sign up
                 </Button>
