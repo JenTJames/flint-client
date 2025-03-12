@@ -189,7 +189,7 @@ export function SignupForm({
                     })
                   }
                 >
-                  sign-in
+                  Sign in
                 </Button>
               </div>
             </form>
