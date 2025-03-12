@@ -47,6 +47,8 @@ export function SignupForm({
 }: React.ComponentProps<"div">) {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
+  const navigate = useNavigate();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -58,8 +60,6 @@ export function SignupForm({
   });
 
   const { loading, requestData } = useHttp();
-
-  const navigate = useNavigate();
 
   const signupHandler = async (values: z.infer<typeof formSchema>) => {
     const user: User = {
@@ -79,7 +79,8 @@ export function SignupForm({
 
       return toast(response.message);
     }
-    toast("Successfully created the user");
+    toast("Your account is created. Please login to continue.");
+    navigate("/sign-in");
   };
 
   const togglePasswordVisibilityHandler = () =>
