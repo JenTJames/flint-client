@@ -43,7 +43,7 @@ const RootLayout: React.FC<WithChildren> = ({ children }) => {
             <ThemeToggle />
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-5">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );
