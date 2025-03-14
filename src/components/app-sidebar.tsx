@@ -50,17 +50,23 @@ const data = {
   ],
   navMain: [
     {
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: BookOpen,
+      items: [],
+    },
+    {
       title: "Master List",
       url: "#",
       icon: DatabaseZap,
       isActive: true,
       items: [
         {
-          title: "Customers",
-          url: "#",
+          title: "Geographies",
+          url: "/master-list/geographies",
         },
         {
-          title: "Geographies",
+          title: "Customers",
           url: "#",
         },
         {
