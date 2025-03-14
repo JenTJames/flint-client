@@ -28,13 +28,18 @@ import { regions, countries } from "@/lib/data";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import Option from "@/types/Option.interface";
+import GeographyFormProps from "@/types/props/Geography-Form-Props.interface";
+import { findOptionByValue } from "@/lib/helpers";
 
 const formSchema = z.object({
   country: z.string().nonempty("Please select a valid country"),
   region: z.string().nonempty("Please select a valid region"),
 });
 
-const GeographyForm = () => {
+const GeographyForm: React.FC<GeographyFormProps> = ({
+  geographies,
+  addGeography,
+}) => {
   const [countryOptions, setCountryOptions] = useState<Option[]>([]);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -46,6 +51,7 @@ const GeographyForm = () => {
   });
 
   const selectedRegion = form.watch("region");
+  const selectedCountry = form.watch("country");
 
   useEffect(() => {
     const filteredCountries = countries.filter(
@@ -53,10 +59,34 @@ const GeographyForm = () => {
     );
     setCountryOptions(filteredCountries);
     form.setValue("country", "");
+    form.clearErrors("country");
   }, [selectedRegion, form]);
 
+  useEffect(() => {
+    const country = findOptionByValue(selectedCountry, countries);
+
+    if (country) {
+      const countryExists = !!geographies.find(
+        (geography) =>
+          geography.country.toLowerCase() === country.label.toLowerCase()
+      );
+
+      if (countryExists)
+        form.setError("country", {
+          message: "This country already exists",
+          type: "manual",
+        });
+      else form.clearErrors("country");
+    }
+  }, [countryOptions, form, selectedCountry, geographies]);
+
   const saveGeographyHandler = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    const region = findOptionByValue(values.region, regions);
+    const country = findOptionByValue(values.country, countries);
+    addGeography({
+      country: country?.label || "",
+      region: region?.label || "",
+    });
   };
 
   return (
@@ -190,7 +220,11 @@ const GeographyForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full">
+        <Button
+          disabled={Object.keys(form.formState.errors).length > 0}
+          type="submit"
+          className="w-full"
+        >
           Save
         </Button>
       </form>

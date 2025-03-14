@@ -28,13 +28,20 @@ const geographyList: Geography[] = [
 ];
 
 const GeographiesPage = () => {
-  const [geographies] = useState<Geography[]>(geographyList);
+  const [geographies, setGeographies] = useState<Geography[]>(geographyList);
+  const [showGeographyForm, setShowGeographyForm] = useState<boolean>(false);
+
+  const addGeographyToList = (geography: Geography) => {
+    setGeographies((currentState) => [...currentState, geography]);
+    setShowGeographyForm(false);
+  };
+
   return (
     <RootLayout>
       <div className="min-h-[100vh] flex-1 flex flex-col gap-5 rounded-xl bg-muted/50 md:min-h-min p-5">
         <div className="flex justify-between items-center">
           <H2>Geographies</H2>
-          <Dialog>
+          <Dialog open={showGeographyForm} onOpenChange={setShowGeographyForm}>
             <DialogTrigger asChild>
               <Button>
                 <PlusIcon /> Add New Geography
@@ -46,7 +53,10 @@ const GeographiesPage = () => {
                 Geography will later be used to associate customers with
                 specific locations for better organization and management.
               </DialogDescription>
-              <GeographyForm />
+              <GeographyForm
+                geographies={geographyList}
+                addGeography={addGeographyToList}
+              />
             </DialogContent>
           </Dialog>
         </div>

@@ -1,5 +1,5 @@
 export default interface Geography {
-  id: number;
+  id?: number;
   region: string;
   country: string;
 }
